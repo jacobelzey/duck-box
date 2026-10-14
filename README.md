@@ -14,7 +14,7 @@ These are renders of the actual print files, not concept art.
 
 ## Credit where it's due
 
-The box itself started as **[Cruise Duck Dropbox - Drop a Duck/Take a Duck](https://makerworld.com/models/2825520) by The Duck Spot** on MakerWorld (the file I downloaded calls it "Drop a Duck/Take a Duck Box With Locking Peg"). The shape, the shelf, the sliding lid and the locking peg idea are The Duck Spot's. Go give it a boost.
+The box itself started as **[Drop a Duck/Take a Duck Box With Locking Peg](https://makerworld.com/en/models/2559534-drop-a-duck-take-a-duck-box-with-locking-peg) by The Duck Spot** on MakerWorld. The shape, the shelf, the sliding lid and the locking peg idea are The Duck Spot's. Go give it a boost.
 
 By the end I had changed almost every piece of it: new insides for the electronics, a magnet back, a reworked insert and funnel, a pirate lid, sensor pockets. The model is under MakerWorld's Standard Digital File License, though, and that license doesn't allow remixes to be hosted anywhere else. So the parts built on that mesh are **not** in this repo as STL files. What's here instead is the script that makes them. You download the original model yourself, run one command, and get exactly the files I printed (same bytes, I checked). Everything I designed from scratch is in [`prints/`](prints) ready to slice.
 
@@ -85,7 +85,7 @@ The slicer said 5 h 39 m and 92 g, about half of that support. It takes longer a
 
 You need Python 3 and the packages in `cad/requirements.txt`.
 
-1. Download the 3MF from [The Duck Spot's MakerWorld page](https://makerworld.com/models/2825520).
+1. Download the 3MF from [The Duck Spot's MakerWorld page](https://makerworld.com/en/models/2559534-drop-a-duck-take-a-duck-box-with-locking-peg).
 2. Run:
 
 ```sh
