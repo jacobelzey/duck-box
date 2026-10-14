@@ -33,7 +33,7 @@ Electronics:
 - **Six screw-on magnets** and six metal washers for under the screw heads.
 - Hookup wire, heat shrink, a little 1.75 mm filament (it pins the drop sensors in place).
 
-Tools: soldering iron, a multimeter with a continuity beep, helping hands, and a heat gun or lighter for the shrink. Keep the heat away from the PLA.
+Tools: soldering iron, a multimeter, helping hands, and a heat gun or lighter for the shrink.
 
 ## Printing
 
@@ -142,37 +142,20 @@ Pictures, in the order you'll need them:
 | [01 LEDs into the hood](docs/wiring/01_leds_into_hood.png) | Side cut and top view through the real tray: where the legs bend and where the resistors lie |
 | [02 Cable routes](docs/wiring/02_cable_routes.png) | Front view, lid off: every cable from its sensor to the electronics bay |
 | [03 Board pins](docs/wiring/03_board_pins.png) | Both sides of the Heltec with the 8 used pins marked |
-| [04 Harness meter checks](docs/wiring/04_harness_meter_checks.png) | Continuity checks on the harness before anything touches the board |
-| [05](docs/wiring/05_joint_b3_vext.png) to [10](docs/wiring/10_joint_b17_gpio17.png) | One picture per joint, each showing which neighbours must stay silent on the meter |
-| [11 Bridge checks](docs/wiring/11_bridge_checks.png) | The full check before first power-up |
+| [05](docs/wiring/05_joint_b3_vext.png) to [10](docs/wiring/10_joint_b17_gpio17.png) | One picture per joint |
 | [12 Closing up](docs/wiring/12_close_up.png) | What goes in, in what order |
 
 `docs/breadboard_test_wiring.png` is the same circuit on a breadboard. I ran it that way for the battery test before building the box.
 
 ### Soldering order
 
-I went bottom 1 (GND), bottom 2 (5V), bottom 3 (Vext), then top 10, top 11, top 16, and the LEDs last (bottom 9, bottom 17) because their wires are the shortest. For every joint:
-
-1. Slide the heat shrink on first.
-2. Tin the wire and tin the pin.
-3. Join them near the pin tip, then shrink.
-4. Beep it against both neighbouring pins. Both must be silent.
+I went bottom 1 (GND), bottom 2 (5V), bottom 3 (Vext), then top 10, top 11, top 16, and the LEDs last (bottom 9, bottom 17) because their wires are the shortest. Heat shrink on first, tin the wire and the pin, solder near the pin tip, shrink.
 
 If you can't tell the emitter and receiver apart once the plugs are off: the emitter has two wires (red, black) and the receiver has three (red, black, white).
 
-### Before first power-up
+### First power-up
 
-Batteries out, USB unplugged, meter on continuity, and check all of these are **silent**:
-
-- 5V, Vext and 3V3 each against GND
-- 5V against Vext
-- GPIO12 against Vext (the important one)
-- GPIO32 and GPIO33 against GND and against Vext
-- GPIO22 and GPIO17 against GND
-
-On the LED and emitter lines you may see a faint glow or a number on the meter with no beep. That's the meter pushing a tiny current through the LEDs, and it's fine. A steady beep is a bridge.
-
-Then power it from USB first (gentler if something is wrong), with your finger near the board for ten seconds. Write down the LAST RUN number before doing anything else. Hold PRG during start-up for the beam test, then switch to batteries and make sure it boots the same way through the diode.
+Power it from USB first. Write down the LAST RUN number before doing anything else. Hold PRG during start-up for the beam test, then switch to batteries and make sure it boots the same way through the diode.
 
 ## Firmware
 
@@ -231,14 +214,6 @@ The power switch is on the battery holder inside the box.
 Six magnets sit in recesses on the back, each held by a screw from inside with a washer under the head. The washers spread the pull over more plastic, and the 4 wall loops on the body are for the same reason. The magnets stand about 3 mm proud of the back. That's enough for the end of the locking peg to clear the door.
 
 Disney's door decoration rules changed in June 2026. As reported ([Cruise Fever](https://cruisefever.net/new-disney-cruise-line-doorway-decoration-rules-starting-june-3/), [Disney Food Blog](https://www.disneyfoodblog.com/2026/05/29/7-new-rules-just-hit-disney-cruise-line/)): magnets only, no tape or adhesives, decorations on the door itself and not the walls around it, nothing that plays sound, music or video, and don't put anything valuable on the door. Magnets won't stick to the wood-finish Concierge doors on the Dream and Fantasy. This box makes no sound, and the screen shows a text tally, not video. Check the current rules for your ship before you sail anyway.
-
-## Things that went wrong, so you don't have to
-
-- **The first LED tray had nowhere near enough room.** The legs and wires had to make sharp bends to get down to the board, and the supports inside the trough were a nightmare. The fix was to make the light tray, an LED hood and the electronics tray one part, with a sloped slot that lets the wires drop straight down into the bay.
-- **The drop beam was supposed to run front to back.** The real sensors were too deep to face each other that way, so it runs side to side under the insert now. That turned out better anyway, because a small duck can't sneak past it.
-- **The insert needed three rounds.** The body's pocket printed with rounded corners and a slightly sagging front face. The insert now has beveled corners, sits a little further back, and has two rails that guide the peg.
-- **Printing the tray face down** meant dozens of tiny supports I couldn't reach. Upright with tree supports from the build plate was slower but came out clean.
-- **One of my LEDs is orange instead of yellow.** You can't tell through the duck.
 
 ## License
 
