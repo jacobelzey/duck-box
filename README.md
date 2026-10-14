@@ -14,9 +14,9 @@ These are renders of the actual print files, not concept art.
 
 ## Credit where it's due
 
-The box itself started as **[Cruise Duck Dropbox - Drop a Duck/Take a Duck](https://makerworld.com/models/2825520) by The Duck Spot** on MakerWorld (the file I downloaded calls it "Drop a Duck/Take a Duck Box With Locking Peg"). The shape, the shelf, the sliding lid and the locking peg idea are hers. Go give it a boost.
+The box itself started as **[Cruise Duck Dropbox - Drop a Duck/Take a Duck](https://makerworld.com/models/2825520) by The Duck Spot** on MakerWorld (the file I downloaded calls it "Drop a Duck/Take a Duck Box With Locking Peg"). The shape, the shelf, the sliding lid and the locking peg idea are The Duck Spot's. Go give it a boost.
 
-By the end I had changed almost every piece of it: new insides for the electronics, a magnet back, a reworked insert and funnel, a pirate lid, sensor pockets. Her model is under MakerWorld's Standard Digital File License, though, and that license doesn't allow remixes to be hosted anywhere else. So the parts built on her mesh are **not** in this repo as STL files. What's here instead is the script that makes them. You download her model yourself, run one command, and get exactly the files I printed (same bytes, I checked). Everything I designed from scratch is in [`prints/`](prints) ready to slice.
+By the end I had changed almost every piece of it: new insides for the electronics, a magnet back, a reworked insert and funnel, a pirate lid, sensor pockets. The model is under MakerWorld's Standard Digital File License, though, and that license doesn't allow remixes to be hosted anywhere else. So the parts built on that mesh are **not** in this repo as STL files. What's here instead is the script that makes them. You download the original model yourself, run one command, and get exactly the files I printed (same bytes, I checked). Everything I designed from scratch is in [`prints/`](prints) ready to slice.
 
 ## What's in here
 
@@ -57,7 +57,7 @@ Everything was printed in PLA at 0.2 mm on a Bambu A1 with the AMS lite. The STL
 | `11_magnet_test_coupon` | any | Optional. Try a magnet and screw in it before you commit to the long body print. |
 | `12_screw_spacer_1mm_x6` / `2mm_x6` | any | Only if you don't have washers. Washers are better. |
 
-**Parts you generate from her model** (see "Building the print files"):
+**Parts you generate from the original model** (see "Building the print files"):
 
 | File | Colour | Notes |
 |---|---|---|
@@ -85,7 +85,7 @@ The slicer said 5 h 39 m and 92 g, about half of that support. It takes longer a
 
 You need Python 3 and the packages in `cad/requirements.txt`.
 
-1. Download the 3MF from [her MakerWorld page](https://makerworld.com/models/2825520).
+1. Download the 3MF from [The Duck Spot's MakerWorld page](https://makerworld.com/models/2825520).
 2. Run:
 
 ```sh
@@ -93,7 +93,7 @@ python3 -m pip install -r cad/requirements.txt
 cad/build.sh ~/Downloads/the-file-you-downloaded.3mf
 ```
 
-The print files land in `build/stl/`. The script first checks the model inside the 3MF against `cad/original_model.sha256`. If she has updated her model since, it stops and tells you, because things may have moved. `DUCKBOX_IGNORE_HASH=1` makes it carry on anyway. Look over the results before printing if you do that.
+The print files land in `build/stl/`. The script first checks the model inside the 3MF against `cad/original_model.sha256`. If the designer has updated the model since, it stops and tells you, because things may have moved. `DUCKBOX_IGNORE_HASH=1` makes it carry on anyway. Look over the results before printing if you do that.
 
 After building, two checks run:
 
@@ -240,4 +240,4 @@ Disney's door decoration rules changed in June 2026. As reported ([Cruise Fever]
 
 ## License
 
-The firmware, scripts, the parts in `prints/` and the pictures in `docs/` are mine, under the MIT license (see `LICENSE`). The Duck Spot's model is not included and stays under her license on MakerWorld. The files `cad/build.sh` makes from it are for your own printing.
+The firmware, scripts, the parts in `prints/` and the pictures in `docs/` are mine, under the MIT license (see `LICENSE`). The Duck Spot's model is not included and stays under its own license on MakerWorld. The files `cad/build.sh` makes from it are for your own printing.
