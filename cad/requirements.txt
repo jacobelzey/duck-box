@@ -1,0 +1,9 @@
+# Versions the print files in this repo were generated with.
+numpy==2.5.3
+scipy==1.18.1
+trimesh==5.1.1
+manifold3d==3.5.4
+shapely==2.2.0
+matplotlib==3.11.2
+networkx==3.6.1
+rtree==1.4.1

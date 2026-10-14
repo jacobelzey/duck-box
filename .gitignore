@@ -1,0 +1,5 @@
+build/
+build.log
+*.3mf
+__pycache__/
+.DS_Store
