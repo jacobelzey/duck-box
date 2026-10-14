@@ -240,4 +240,6 @@ Disney's door decoration rules changed in June 2026. As reported ([Cruise Fever]
 
 ## License
 
-The firmware, scripts, the parts in `prints/` and the pictures in `docs/` are mine, under the MIT license (see `LICENSE`). The Duck Spot's model is not included and stays under its own license on MakerWorld. The files `cad/build.sh` makes from it are for your own printing.
+Everything in this repo (firmware, scripts, the parts in `prints/`, the pictures in `docs/`) is licensed under [Creative Commons Attribution-NonCommercial-ShareAlike 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). Clone it, fork it, build your own box, change whatever you want. Just don't sell it or use it commercially, give credit, and share your changes under the same license. The full text is in `LICENSE`.
+
+The Duck Spot's model is not included and stays under its own license on MakerWorld. The files `cad/build.sh` makes from it are for your own printing.
