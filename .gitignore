@@ -3,3 +3,6 @@ build.log
 *.3mf
 __pycache__/
 .DS_Store
+render/node_modules/
+render/scene.glb
+out/

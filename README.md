@@ -4,7 +4,13 @@ A pirate "drop a duck / take a duck" box for our stateroom door on a Disney crui
 
 If you haven't run into cruise ducking: people bring rubber ducks on board and hide them around the ship for others to find. A lot of families also put a box on their cabin door so anyone walking past can drop a duck in the top or take one off the shelf at the bottom. Ours keeps score. Two light beams see every duck that goes in and every hand that reaches in. A small screen on the front shows the tally in pirate talk, and four LEDs behind the duck on the lid flicker like a candle. It runs on three AA batteries and holds to a steel door with six magnets.
 
-![The screen layouts](firmware/docs/screens_main.png)
+![The box on a door](docs/renders/box_on_door.png)
+
+| Lid off | Back |
+|---|---|
+| ![Lid off](docs/renders/lid_off.png) | ![Back, with the magnets](docs/renders/back_magnets.png) |
+
+These are renders of the actual print files, not concept art.
 
 ## Credit where it's due
 
@@ -18,7 +24,8 @@ By the end I had changed almost every piece of it: new insides for the electroni
 firmware/   PlatformIO project for the Heltec board (C++, Arduino core)
 prints/     STLs for the parts I designed from scratch
 cad/        Python that builds every print file from The Duck Spot's 3MF
-docs/       wiring and assembly pictures, drawn to scale from the model
+docs/       renders, assembly steps and wiring pictures, all made from the model
+render/     the three.js page and script that make the renders
 ```
 
 ## Parts list
@@ -157,7 +164,23 @@ If you can't tell the emitter and receiver apart once the plugs are off: the emi
 
 Power it from USB first. Write down the LAST RUN number before doing anything else. Hold PRG during start-up for the beam test, then switch to batteries and make sure it boots the same way through the diode.
 
+## Assembly
+
+The order matters, because some parts block others. The tray has to go in before the shelf sensor wires, and the board and battery go in before the insert.
+
+| | |
+|---|---|
+| ![1 Magnets](docs/assembly/01_magnets.png) | ![2 Tray](docs/assembly/02_tray.png) |
+| ![3 Shelf sensors](docs/assembly/03_shelf_sensors.png) | ![4 Board](docs/assembly/04_board.png) |
+| ![5 Battery](docs/assembly/05_battery.png) | ![6 Drop sensors into the insert](docs/assembly/06_insert_sensors.png) |
+| ![7 Insert](docs/assembly/07_insert.png) | ![8 Lid](docs/assembly/08_lid.png) |
+| ![9 Peg](docs/assembly/09_peg.png) | |
+
+Any work inside later means taking the box off the door, because the peg comes out from the back.
+
 ## Firmware
+
+![The screen layouts](firmware/docs/screens_main.png)
 
 PlatformIO, Arduino core, versions pinned in `platformio.ini`.
 

@@ -1,0 +1,157 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #e6eaee; font-family: "DejaVu Sans", Arial, sans-serif; }
+  #wrap { position: relative; width: 100vw; height: 100vh; }
+  canvas { display: block; }
+  #cap { position: absolute; left: 0; right: 0; top: 0; padding: 18px 26px 14px; background: rgba(255,255,255,.92); border-bottom: 1px solid #c9d0d8; }
+  #cap b { display: block; font-size: 24px; color: #18202c; }
+  #cap span { display: block; font-size: 15.5px; color: #4a5562; margin-top: 5px; line-height: 1.35; }
+  #cap:empty { display: none; }
+</style>
+<script type="importmap">
+{ "imports": { "three": "./node_modules/three/build/three.module.js", "three/addons/": "./node_modules/three/examples/jsm/" } }
+</script>
+</head>
+<body>
+<div id="wrap"><div id="cap"></div></div>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+const q = new URLSearchParams(location.search);
+const view = q.get('view') || 'hero';
+const W = innerWidth, H = innerHeight;
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(devicePixelRatio); renderer.setSize(W, H);
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.1;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.localClippingEnabled = true;
+document.getElementById('wrap').prepend(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xe6eaee);
+const std = (color, o = {}) => new THREE.MeshStandardMaterial(Object.assign({ color, roughness: 0.7, metalness: 0, flatShading: true }, o));
+
+// colours = the filament each part is printed in (black parts drawn charcoal so their shape reads)
+const COL = {
+  body_black: std(0x30333b), body_white: std(0x30333b), insert_black: std(0x2a2c33), funnel_liner: std(0xf2c21b, { roughness: 0.55 }),
+  light_tray: std(0xf3f1ea), screen_cartridge: std(0x23252b), tray_stop: std(0x23252b),
+  shelf_block_L: std(0x23252b), shelf_block_R: std(0x23252b),
+  q_pcb: std(0x1f3550), q_oled: std(0x0a0c10, { emissive: 0x2a9fd0, emissiveIntensity: 0.55, roughness: 0.2 }), q_pins: std(0xd4af37, { metalness: 0.6, roughness: 0.35 }),
+  q_battery: std(0x1b1c20), q_keeper: std(0xeeeeee), q_sensor_drop_L: std(0x111214), q_sensor_drop_R: std(0x111214), q_sensor_shelf: std(0x111214),
+  q_leds: std(0xffe27a, { emissive: 0xffc93a, emissiveIntensity: 1.2 }), q_peg: std(0x8a8f99), q_magnets: std(0xc7ccd3, { metalness: 0.8, roughness: 0.3 }),
+  lidasm_lid_black: std(0x1b1c20), lidasm_lid_red: std(0xb3202a, { roughness: 0.6 }), lidasm_lid_white: std(0xf1ede2), lidasm_lid_yellow: std(0xf2c21b, { roughness: 0.55 }),
+  lidasm_cap_yellow: std(0xf5c400, { emissive: 0xd99a00, emissiveIntensity: 0.3, roughness: 0.5 }), lidasm_cap_black: std(0x0e0e10),
+};
+const LID = ['lidasm_lid_black', 'lidasm_lid_red', 'lidasm_lid_white', 'lidasm_lid_yellow', 'lidasm_cap_yellow', 'lidasm_cap_black'];
+const BOARD = ['screen_cartridge', 'q_pcb', 'q_oled', 'q_pins'];
+const TRAY = ['light_tray', 'tray_stop', 'q_leds'];
+const SHELF = ['shelf_block_L', 'shelf_block_R', 'q_sensor_shelf'];
+const INSERT = ['insert_black', 'funnel_liner', 'q_sensor_drop_L', 'q_sensor_drop_R', 'q_keeper'];
+const BODY = ['body_black', 'body_white'];
+const ALL = Object.keys(COL);
+const F34 = { cam: [-260, 300, 520], tgt: [0, 120, 40], fov: 30 };     // front three-quarter, lid off
+const off = (parts, v) => Object.fromEntries(parts.map((p) => [p, v]));
+
+const V = {
+  hero:   { show: ALL, cam: [-190, 190, 640], tgt: [0, 112, 44], fov: 27, door: true },
+  open:   { show: ALL, off: off(LID, [0, 205, 0]), noArrow: true, cam: [-300, 360, 900], tgt: [0, 205, 44], fov: 33, door: true },
+  back:   { show: ALL, cam: [230, 210, -560], tgt: [0, 112, 40], fov: 28 },
+  explode:{ show: ALL, off: Object.assign(off(LID, [0, 120, 150]), off(INSERT, [0, 115, 0]), off(TRAY, [0, 0, 120]), off(BOARD, [0, -20, 175]),
+                                           { q_battery: [0, -20, 140] }, off(SHELF, [0, 0, 70]), { q_peg: [0, 0, -120] }),
+            cam: [-420, 330, 650], tgt: [0, 130, 90], fov: 33 },
+  s1: { show: [...BODY, 'q_magnets'], off: { q_magnets: [0, 0, -70] }, cam: [420, 200, -420], tgt: [0, 100, 0], fov: 30,
+        t: '1 · Magnets', s: 'Six magnets sit in the recesses on the back. Each screw goes in from inside the box with a washer under its head.' },
+  s2: { show: [...BODY, 'q_magnets', ...TRAY], off: off(TRAY, [0, 0, 130]), ...F34,
+        t: '2 · One-piece tray', s: 'Glue the LEDs in and push the tray stop through its window first. The tray then slides straight in from the front in one move.' },
+  s3: { show: [...BODY, 'q_magnets', ...TRAY, ...SHELF], off: off(SHELF, [0, 0, 80]), ...F34,
+        t: '3 · Shelf sensors', s: 'Thread each shelf sensor wire up its side-wall tunnel, push the sensor into its block, then slide the block in from the front.' },
+  s4: { show: [...BODY, 'q_magnets', ...TRAY, ...SHELF, ...BOARD], off: off(BOARD, [0, 0, 120]), ...F34,
+        t: '4 · Board', s: 'With every wire soldered, the Heltec clicks into the screen cartridge and the cartridge slides in under the deck.' },
+  s5: { show: [...BODY, 'q_magnets', ...TRAY, ...SHELF, ...BOARD, 'q_battery'], off: { q_battery: [0, 0, 120] }, ...F34,
+        t: '5 · Battery holder', s: 'Wire end first into the right-hand slot. The leads come forward over the top of the holder.' },
+  s6: { show: INSERT, off: { q_sensor_drop_L: [0, 0, 45], q_sensor_drop_R: [0, 0, 45], funnel_liner: [0, 55, 0] },
+        cam: [-180, 330, 300], tgt: [0, 205, 36], fov: 30,
+        t: '6 · Drop sensors into the insert', s: 'On the bench: each sensor slides into its pocket from the front, receiver left, emitter right, pinned with 1.75 mm filament. The yellow liner drops into the funnel.' },
+  s7: { show: [...BODY, 'q_magnets', ...TRAY, ...SHELF, ...BOARD, 'q_battery', ...INSERT], off: off(INSERT, [0, 110, 0]), ...F34, cam: [-260, 380, 520], tgt: [0, 150, 40],
+        t: '7 · Insert', s: 'Drops in from the top. Press both sensor cables into their grooves and draw the slack back down the duct as it goes in.' },
+  s8: { show: ALL.filter((n) => n !== 'q_peg'), off: off(LID, [0, 200, 0]), cam: [-260, 380, 600], tgt: [0, 170, 44], fov: 32,
+        t: '8 · Lid', s: 'Duck cap pushed into the lid from behind, then the lid slides down its groove from the top.' },
+  s9: { show: ALL, off: { q_peg: [0, 0, -110] }, cam: [420, 260, -380], tgt: [-40, 170, 20], fov: 30,
+        t: '9 · Locking peg', s: 'Goes in from the back. With the box on the door, the peg is trapped and the lid cannot come off.' },
+};
+const S = V[view];
+if (S.t) document.getElementById('cap').innerHTML = `<b>${S.t}</b><span>${S.s}</span>`;
+
+const camera = new THREE.PerspectiveCamera(S.fov, W / H, 10, 6000);
+camera.position.set(...S.cam); camera.lookAt(...S.tgt);
+if (S.t) camera.setViewOffset(W, H, 0, -H * 0.05, W, H);   // nudge content below the caption
+
+scene.add(new THREE.HemisphereLight(0xffffff, 0x8a909c, 1.15));
+const sun = new THREE.DirectionalLight(0xffffff, 2.2);
+const sz = S.cam[2] < 0 ? -1 : 1;
+sun.position.set(-260, 480, 520 * sz); sun.castShadow = true;
+sun.shadow.mapSize.set(4096, 4096); sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.6; sun.shadow.radius = 6;
+Object.assign(sun.shadow.camera, { left: -400, right: 400, top: 520, bottom: -200, near: 50, far: 2000 });
+sun.target.position.set(0, 110, 40); scene.add(sun, sun.target);
+const fill = new THREE.DirectionalLight(0xdfe8ff, 0.7); fill.position.set(360, 180, 420 * sz); scene.add(fill);
+if (S.door) {
+  const door = new THREE.Mesh(new THREE.PlaneGeometry(3000, 3000), new THREE.MeshStandardMaterial({ color: 0xd9dde2, roughness: 0.6, metalness: 0.2 }));
+  door.position.set(0, 110, -3.2); door.receiveShadow = true; scene.add(door);
+  const glow = new THREE.PointLight(0xffc93a, 2500, 140, 2); glow.position.set(0, 140, 100); scene.add(glow);
+}
+
+function arrow(from, to) {
+  const a = new THREE.Vector3(...from), b = new THREE.Vector3(...to), d = b.clone().sub(a), L = d.length();
+  const g = new THREE.Group(), mat = new THREE.MeshBasicMaterial({ color: 0xe0471c });
+  const shaft = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 2.2, L - 14, 16), mat); shaft.position.y = (L - 14) / 2;
+  const head = new THREE.Mesh(new THREE.ConeGeometry(7, 14, 20), mat); head.position.y = L - 7;
+  g.add(shaft, head); g.position.copy(a);
+  g.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), d.normalize()); scene.add(g);
+}
+
+new GLTFLoader().load('scene.glb', (gltf) => {
+  gltf.scene.updateMatrixWorld(true);
+  const meshes = []; gltf.scene.traverse((o) => { if (o.isMesh) meshes.push(o); });
+  const groups = {};
+  for (const o of meshes) {
+    const n = o.name || o.parent.name;
+    if (!S.show.includes(n)) continue;
+    const m = new THREE.Mesh(o.geometry.clone().applyMatrix4(o.matrixWorld), COL[n] || std(0xff00ff));
+    m.castShadow = !/oled|leds/.test(n); m.receiveShadow = true;
+    const d = (S.off && S.off[n]) || [0, 0, 0];
+    m.position.set(...d); scene.add(m);
+    if (S.off && S.off[n] && !S.noArrow) {
+            const key = d.join(','); (groups[key] = groups[key] || []).push(m);
+    }
+  }
+  // one arrow per group of parts moving together, drawn beside the group (not through it), pointing home
+  for (const [key, ms] of Object.entries(groups)) {
+    const d = key.split(',').map(Number); const dv = new THREE.Vector3(...d); const len = dv.length(); if (len < 1) continue;
+    const bb = new THREE.Box3(); ms.forEach((m) => bb.expandByObject(m));
+    const c = bb.getCenter(new THREE.Vector3()); const u = dv.clone().normalize();
+    // arrow starts outside the moved part, on the far side from the box, and points at it: "push this way"
+    const half = Math.abs(u.x) * (bb.max.x - bb.min.x) / 2 + Math.abs(u.y) * (bb.max.y - bb.min.y) / 2 + Math.abs(u.z) * (bb.max.z - bb.min.z) / 2;
+    const a0 = c.clone().add(u.clone().multiplyScalar(half + 75));
+    const a1 = c.clone().add(u.clone().multiplyScalar(half + 6));
+    arrow(a0.toArray(), a1.toArray());
+  }
+  // frame everything that is drawn
+  scene.updateMatrixWorld(true);
+  const box = new THREE.Box3(); scene.traverse((o) => { if (o.isMesh && o.geometry.type !== 'PlaneGeometry') box.expandByObject(o); });
+  const sph = box.getBoundingSphere(new THREE.Sphere());
+  const dir = new THREE.Vector3(...S.cam).sub(new THREE.Vector3(...S.tgt)).normalize();
+  const fovR = THREE.MathUtils.degToRad(S.fov) / 2, aspect = W / H;
+  const fit = sph.radius / Math.sin(Math.min(fovR, Math.atan(Math.tan(fovR) * aspect))) * (S.t ? 1.12 : 1.02) * (S.zoom || 1);
+  camera.position.copy(sph.center).add(dir.multiplyScalar(fit)); camera.lookAt(sph.center);
+  camera.near = fit / 20; camera.far = fit * 10; camera.updateProjectionMatrix();
+  renderer.render(scene, camera);
+  requestAnimationFrame(() => { renderer.render(scene, camera); requestAnimationFrame(() => { window.__done = true; }); });
+}, undefined, (e) => { console.log('load error', e); window.__done = 'error'; });
+</script>
+</body>
+</html>
