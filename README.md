@@ -226,9 +226,9 @@ sh native_tests/run_sim.sh   # whole-firmware simulation (run `pio run` once fir
 
 To get days out of three AAs, the firmware lights the beam emitters for a fraction of a millisecond, a hundred times a second, reads the receivers, and sleeps the processor in between. The candle LEDs are pulsed in the same cycle. The screen stays on.
 
-Measured: a fresh set of lithium AAs ran the breadboard build for about **68.5 hours** (Sunday 4:21 PM to Wednesday about 12:50 PM). When I pulled them, each cell read about 1.49 V resting. Forum reports (not a datasheet) put that close to empty for a lithium AA, where a fresh one reads about 1.8 V. That's short of the three and a half days I'd estimated on paper.
+Measured: one set of fresh lithium AAs lasted about **88 hours, or a little over 3.5 days**. It ran the breadboard build for about 68.5 hours (Sunday 4:21 PM to Wednesday about 12:50 PM). I pulled the cells at about 1.49 V each, then put the same three into the finished box, where they ran another 19.5 hours until it shut off. That lines up with the three and a half days I'd estimated on paper.
 
-For a cruise of five or more nights, that means one swap. I'm doing it the morning of day 3 and bringing a third set as a spare. The LAST RUN line on the start-up screen tells you how long the previous set lasted, so you can see how yours are doing.
+For a cruise of five or more nights, that means one swap. I'm doing it the morning of day 3, which leaves most of a day of margin, and bringing a third set as a spare. The LAST RUN line on the start-up screen tells you how long the previous set lasted, so you can see how yours are doing.
 
 The power switch is on the battery holder inside the box.
 
